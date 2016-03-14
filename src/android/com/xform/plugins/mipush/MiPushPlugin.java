@@ -1,5 +1,6 @@
 package com.xform.plugins.mipush;
 
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -14,11 +15,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
- * Created by nirui on 16/3/12.
+ * Created by Ani on 16/3/12.
  */
 public class MiPushPlugin extends CordovaPlugin {
 
     private static CallbackContext cContext = null;
+    private static String appId;
+    private static String appKey;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -26,28 +29,41 @@ public class MiPushPlugin extends CordovaPlugin {
         ApplicationInfo applicationInfo;
         try {
             applicationInfo = packageManager.getApplicationInfo(cordova.getActivity().getApplicationContext().getPackageName(), 128);
-            String appId = applicationInfo.metaData.getString("miPush_appId");
-            String appKey = applicationInfo.metaData.getString("miPush_appKey");
-            regist(appId, appKey);
+            appId = applicationInfo.metaData.getString("miPush_appId");
+            appKey = applicationInfo.metaData.getString("miPush_appKey");
         } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(cordova.getActivity().getApplicationContext(), "推送服务注册失败", Toast.LENGTH_LONG).show();
+            Toast.makeText(cordova.getActivity().getApplicationContext(), "推送服务初始化错误", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if("miInit".equals(action)) {
-            cContext = callbackContext;
-            final String appId = args.getString(0);
-            final String appKey = args.getString(1);
+        if("register".equals(action)) {
+            register(cordova.getActivity().getApplicationContext(), appId, appKey);
+            return true;
+        }
+        if("unregister".equals(action)) {
+            unregister(cordova.getActivity().getApplicationContext());
             return true;
         }
         return false;
     }
 
-    private void regist(String appId, String appKey) {
-        MiPushClient.registerPush(cordova.getActivity().getApplicationContext(), appId, appKey);
+    private void register(Context context, String appId, String appKey) {
+        MiPushClient.registerPush(context, appId, appKey);
+    }
+
+    private void unregister(Context context) {
+        MiPushClient.unregisterPush(context);
+    }
+
+    private void setAlias(Context context, String alias, String category) {
+        MiPushClient.setAlias(context, alias, category);
+    }
+
+    private void unsetAlias(Context context, String alias, String category) {
+        MiPushClient.unsetAlias(context, alias, category);
     }
 
     public static CallbackContext getContext() {

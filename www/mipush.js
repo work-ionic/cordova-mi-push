@@ -1,5 +1,5 @@
 /**
- * Created by nirui on 16/3/12.
+ * Created by Ani on 16/3/12.
  */
 var cordova = require('cordova'),
     exec = require('cordova/exec');

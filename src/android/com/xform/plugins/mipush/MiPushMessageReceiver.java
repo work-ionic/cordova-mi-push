@@ -1,18 +1,14 @@
 package com.xform.plugins.mipush;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
-import android.widget.Toast;
 import com.xiaomi.mipush.sdk.*;
-import org.apache.cordova.CallbackContext;
 import org.apache.cordova.PluginResult;
 
 import java.util.List;
 
 /**
- * Created by nirui on 16/3/12.
+ * Created by Ani on 16/3/12.
  */
 public class MiPushMessageReceiver extends PushMessageReceiver {
     private String mRegId;
