@@ -8,6 +8,6 @@
 
 ### Install
 
-`cordova plugin add https://github.com/xiaoni3168/cordoba-mi-push.git --appId=xxx --appKey=xxx`
+`cordova plugin add https://github.com/xiaoni3168/cordova-mi-push.git --appId=xxx --appKey=xxx`
 
 注：--appId 和 --appKey 为必填参数
