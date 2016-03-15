@@ -7,11 +7,11 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 
 import android.widget.Toast;
 
-import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import org.apache.cordova.*;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -156,6 +156,7 @@ public class MiPushPlugin extends CordovaPlugin {
         }
         if("startListenMessage".equals(action)) {
             listenContext = callbackContext;
+            return true;
         }
         return false;
     }
@@ -356,15 +357,38 @@ public class MiPushPlugin extends CordovaPlugin {
         return result;
     }
 
-    public static void messageHandler(MiPushMessage message) {
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, message.toString());
-        pluginResult.setKeepCallback(true);
-        listenContext.sendPluginResult(pluginResult);
+    public static CallbackContext getListenCallback() {
+        return listenContext;
     }
 
-    public static void commandHandler(MiPushCommandMessage message) {
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, message.toString());
+    public static void commandHandler(JSONObject message) {
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, message);
         pluginResult.setKeepCallback(true);
         commandResultContext.sendPluginResult(pluginResult);
     }
+
+    public static JSONObject jsonMessage(MiPushMessage message) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("category", message.getCategory());
+            json.put("alias", message.getAlias());
+            json.put("content", message.getContent());
+            json.put("description", message.getDescription());
+            json.put("extra", message.getExtra());
+            json.put("messageId", message.getMessageId());
+            json.put("messageType", message.getMessageType());
+            json.put("notifyId", message.getNotifyId());
+            json.put("notifyType", message.getNotifyType());
+            json.put("passThrough", message.getPassThrough());
+            json.put("title", message.getTitle());
+            json.put("topic", message.getTopic());
+            json.put("userAccount", message.getUserAccount());
+            json.put("isArrivedMessage", message.isArrivedMessage());
+            json.put("isNotified", message.isNotified());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
 }
