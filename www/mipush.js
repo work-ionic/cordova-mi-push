@@ -30,8 +30,8 @@ var METHOD = {
 
 function MiPush() {};
 
-MiPush.prototype.register = function(successCallback, app_id, app_key) {
-    exec(successCallback, null, TAG, METHOD.REGISTER, [app_id, app_key]);
+MiPush.prototype.register = function(successCallback) {
+    exec(successCallback, null, TAG, METHOD.REGISTER, []);
 };
 
 MiPush.prototype.unregister = function(successCallback) {
