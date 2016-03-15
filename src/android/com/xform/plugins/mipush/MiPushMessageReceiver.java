@@ -3,7 +3,6 @@ package com.xform.plugins.mipush;
 import android.content.Context;
 import android.text.TextUtils;
 import com.xiaomi.mipush.sdk.*;
-import org.apache.cordova.PluginResult;
 
 import java.util.List;
 
@@ -29,8 +28,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         } else if(!TextUtils.isEmpty(message.getAlias())) {
             mAlias = message.getAlias();
         }
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, mMessage);
-        MiPushPlugin.getContext().sendPluginResult(pluginResult);
+        MiPushPlugin.messageHandler(message);
     }
 
     @Override
@@ -41,8 +39,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         } else if(!TextUtils.isEmpty(message.getAlias())) {
             mAlias = message.getAlias();
         }
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, mMessage);
-        MiPushPlugin.getContext().sendPluginResult(pluginResult);
+        MiPushPlugin.messageHandler(message);
     }
 
     @Override
@@ -53,8 +50,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         } else if(!TextUtils.isEmpty(message.getAlias())) {
             mAlias = message.getAlias();
         }
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, mMessage);
-        MiPushPlugin.getContext().sendPluginResult(pluginResult);
+        MiPushPlugin.messageHandler(message);
     }
 
     @Override
@@ -89,8 +85,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                 mEndTime = cmdArg2;
             }
         }
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, command);
-        MiPushPlugin.getContext().sendPluginResult(pluginResult);
+        MiPushPlugin.messageHandler(message);
     }
 
     @Override
@@ -109,12 +104,11 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         } else {
             log = message.getReason();
         }
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, command);
-        MiPushPlugin.getContext().sendPluginResult(pluginResult);
+        MiPushPlugin.messageHandler(message);
     }
 
     @Override
     public void onReceiveMessage(Context context, MiPushMessage message) {
-
+        MiPushPlugin.messageHandler(message);
     }
 }
