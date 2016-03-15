@@ -25,22 +25,15 @@ public class MiPushPlugin extends CordovaPlugin {
     private static String appId;
     private static String appKey;
 
+    private static String TAG = "com.xform.plugins.mipush";
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-        PackageManager packageManager = cordova.getActivity().getApplicationContext().getPackageManager();
+        PackageManager packageManager = cordova.getActivity().getPackageManager();
         ApplicationInfo applicationInfo;
         try {
-            applicationInfo = packageManager.getApplicationInfo(cordova.getActivity().getApplicationContext().getPackageName(), 128);
-            if(applicationInfo.metaData.get("miPush_appId") instanceof Integer) {
-                appId = applicationInfo.metaData.get("miPush_appId") + "";
-            } else {
-                appId = (String) applicationInfo.metaData.get("miPush_appId");
-            }
-            if(applicationInfo.metaData.get("miPush_appKey") instanceof Integer) {
-                appKey = applicationInfo.metaData.get("miPush_appKey") + "";
-            } else {
-                appKey = (String) applicationInfo.metaData.get("miPush_appKey");
-            }
+            applicationInfo = packageManager.getApplicationInfo(cordova.getActivity().getPackageName(), PackageManager.GET_META_DATA);
+                appId = applicationInfo.metaData.getString("miPush_appId").split("str_")[1];
+                appKey = applicationInfo.metaData.getString("miPush_appKey").split("str_")[1];
         } catch (PackageManager.NameNotFoundException e) {
             Toast.makeText(cordova.getActivity().getApplicationContext(), "推送服务初始化错误", Toast.LENGTH_LONG).show();
             e.printStackTrace();
@@ -371,6 +364,7 @@ public class MiPushPlugin extends CordovaPlugin {
 
     public static void commandHandler(MiPushCommandMessage message) {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, message.toString());
+        pluginResult.setKeepCallback(true);
         commandResultContext.sendPluginResult(pluginResult);
     }
 }

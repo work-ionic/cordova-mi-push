@@ -31,8 +31,8 @@ module.exports = function (context) {
             process.exit(1);
         } else {
             var projectManifestXmlRoot = XmlHelpers.parseElementtreeSync(projectManifestFile);
-            var appIdValue = et.XML('<meta-data android:name="miPush_appId" android:value="' + appId + '"></meta-data>'),
-                appKeyValue = et.XML('<meta-data android:name="miPush_appKey" android:value="' + appKey + '"></meta-data>');
+            var appIdValue = et.XML('<meta-data android:name="miPush_appId" android:value="str_' + appId + '"></meta-data>'),
+                appKeyValue = et.XML('<meta-data android:name="miPush_appKey" android:value="str_' + appKey + '"></meta-data>');
 
             XmlHelpers.graftXML(projectManifestXmlRoot, [appIdValue, appKeyValue], '/manifest/application');
             fs.writeFileSync(projectManifestFile, projectManifestXmlRoot.write({indent: 4}), 'utf-8');
