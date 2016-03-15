@@ -31,8 +31,16 @@ public class MiPushPlugin extends CordovaPlugin {
         ApplicationInfo applicationInfo;
         try {
             applicationInfo = packageManager.getApplicationInfo(cordova.getActivity().getApplicationContext().getPackageName(), 128);
-            appId = (String) applicationInfo.metaData.get("miPush_appId");
-            appKey = (String) applicationInfo.metaData.get("miPush_appKey");
+            if(applicationInfo.metaData.get("miPush_appId") instanceof Integer) {
+                appId = applicationInfo.metaData.get("miPush_appId") + "";
+            } else {
+                appId = (String) applicationInfo.metaData.get("miPush_appId");
+            }
+            if(applicationInfo.metaData.get("miPush_appKey") instanceof Integer) {
+                appKey = applicationInfo.metaData.get("miPush_appKey") + "";
+            } else {
+                appKey = (String) applicationInfo.metaData.get("miPush_appKey");
+            }
         } catch (PackageManager.NameNotFoundException e) {
             Toast.makeText(cordova.getActivity().getApplicationContext(), "推送服务初始化错误", Toast.LENGTH_LONG).show();
             e.printStackTrace();
