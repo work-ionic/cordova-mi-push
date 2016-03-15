@@ -85,26 +85,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                 mEndTime = cmdArg2;
             }
         }
-        MiPushPlugin.messageHandler(message);
-    }
-
-    @Override
-    public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
-        String command = message.getCommand();
-        List<String> arguments = message.getCommandArguments();
-        String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
-        String log;
-        if(MiPushClient.COMMAND_REGISTER.equals(command)) {
-            if(message.getResultCode() == ErrorCode.SUCCESS) {
-                mRegId = cmdArg1;
-                log = "注册成功";
-            } else {
-                log = "注册失败";
-            }
-        } else {
-            log = message.getReason();
-        }
-        MiPushPlugin.messageHandler(message);
+        MiPushPlugin.commandHandler(message);
     }
 
     @Override

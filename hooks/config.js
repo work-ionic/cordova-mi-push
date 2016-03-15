@@ -27,7 +27,7 @@ module.exports = function (context) {
             }
         });
         if(!appId || !appKey) {
-            console.error('缺少必要参数[--appId, --appKey]');
+            console.error('缺少必要参数[--appId, --appKey], 请卸载后重新安装');
             process.exit(1);
         } else {
             var projectManifestXmlRoot = XmlHelpers.parseElementtreeSync(projectManifestFile);

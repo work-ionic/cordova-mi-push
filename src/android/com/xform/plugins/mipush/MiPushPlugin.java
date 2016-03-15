@@ -7,6 +7,7 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 
 import android.widget.Toast;
 
+import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import org.apache.cordova.*;
 import org.json.JSONArray;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MiPushPlugin extends CordovaPlugin {
 
     private static CallbackContext listenContext = null;
+    private static CallbackContext commandResultContext = null;
     private static String appId;
     private static String appKey;
 
@@ -40,52 +42,63 @@ public class MiPushPlugin extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if("register".equals(action)) {
+            commandResultContext = callbackContext;
             register(cordova.getActivity().getApplicationContext(), appId, appKey);
             return true;
         }
         if("unregister".equals(action)) {
+            commandResultContext = callbackContext;
             unregister(cordova.getActivity().getApplicationContext());
             return true;
         }
         if("setAlias".equals(action)) {
+            commandResultContext = callbackContext;
             String alias = args.getString(0);
             setAlias(cordova.getActivity().getApplicationContext(), alias, null);
             return true;
         }
         if("unsetAlias".equals(action)) {
+            commandResultContext = callbackContext;
             String alias = args.getString(0);
             unsetAlias(cordova.getActivity().getApplicationContext(), alias, null);
             return true;
         }
         if("setUserAccount".equals(action)) {
+            commandResultContext = callbackContext;
             String userAccount = args.getString(0);
             setUserAccount(cordova.getActivity().getApplicationContext(), userAccount, null);
             return true;
         }
         if("unsetUserAccount".equals(action)) {
+            commandResultContext = callbackContext;
             String userAccount = args.getString(0);
             unsetUserAccount(cordova.getActivity().getApplicationContext(), userAccount, null);
             return true;
         }
         if("subscribe".equals(action)) {
+            commandResultContext = callbackContext;
             String topic = args.getString(0);
             subscribe(cordova.getActivity().getApplicationContext(), topic, null);
             return true;
         }
         if("unsubscribe".equals(action)) {
+            commandResultContext = callbackContext;
             String topic = args.getString(0);
             unsubscribe(cordova.getActivity().getApplicationContext(), topic, null);
             return true;
         }
         if("pausePush".equals(action)) {
+            commandResultContext = callbackContext;
             pausePush(cordova.getActivity().getApplicationContext(), null);
             return true;
         }
         if("resumePush".equals(action)) {
+            commandResultContext = callbackContext;
             resumePush(cordova.getActivity().getApplicationContext(), null);
             return true;
         }
         if("setAcceptTime".equals(action)) {
+            commandResultContext = callbackContext;
             int startHour = args.getInt(0);
             int startMin = args.getInt(1);
             int endHour = args.getInt(2);
@@ -108,25 +121,30 @@ public class MiPushPlugin extends CordovaPlugin {
             return true;
         }
         if("reportMessageClicked".equals(action)) {
+            commandResultContext = callbackContext;
             String msgid = args.getString(0);
             reportMessageClicked(cordova.getActivity().getApplicationContext(), msgid);
             return true;
         }
         if("clearNotification".equals(action)) {
+            commandResultContext = callbackContext;
             int notifyId = args.getInt(0);
             clearNotification(cordova.getActivity().getApplicationContext(), notifyId);
             return true;
         }
         if("clearAllNotification".equals(action)) {
+            commandResultContext = callbackContext;
             clearAllNotification(cordova.getActivity().getApplicationContext());
             return true;
         }
         if("setLocalNotificationType".equals(action)) {
+            commandResultContext = callbackContext;
             int notifyType = args.getInt(0);
             setLocalNotificationType(cordova.getActivity().getApplicationContext(), notifyType);
             return true;
         }
         if("clearLocalNotificationType".equals(action)) {
+            commandResultContext = callbackContext;
             clearLocalNotificationType(cordova.getActivity().getApplicationContext());
             return true;
         }
@@ -341,5 +359,10 @@ public class MiPushPlugin extends CordovaPlugin {
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, message.toString());
         pluginResult.setKeepCallback(true);
         listenContext.sendPluginResult(pluginResult);
+    }
+
+    public static void commandHandler(MiPushCommandMessage message) {
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, message.toString());
+        commandResultContext.sendPluginResult(pluginResult);
     }
 }
