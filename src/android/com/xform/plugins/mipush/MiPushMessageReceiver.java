@@ -1,6 +1,7 @@
 package com.xform.plugins.mipush;
 
 import android.content.Context;
+import android.content.Intent;
 import com.xiaomi.mipush.sdk.*;
 import org.apache.cordova.PluginResult;
 import org.json.JSONException;
@@ -31,9 +32,17 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
+        Intent mainIntent = null;
+        try {
+            mainIntent = new Intent(context, this.getClass().getClassLoader().loadClass(context.getPackageName() + ".MainActivity"));
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(mainIntent);
         PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
         pluginResult.setKeepCallback(true);
-        MiPushPlugin.getListenCallback().sendPluginResult(pluginResult);
+        MiPushPlugin.getClickCallback().sendPluginResult(pluginResult);
     }
 
     @Override

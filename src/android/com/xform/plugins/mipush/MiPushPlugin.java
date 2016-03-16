@@ -3,6 +3,7 @@ package com.xform.plugins.mipush;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.util.Log;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import android.widget.Toast;
@@ -22,6 +23,7 @@ public class MiPushPlugin extends CordovaPlugin {
 
     private static CallbackContext listenContext = null;
     private static CallbackContext commandResultContext = null;
+    private static CallbackContext clickContext = null;
     private static String appId;
     private static String appKey;
 
@@ -107,18 +109,22 @@ public class MiPushPlugin extends CordovaPlugin {
             if(checkAcceptTime(startHour, startMin, endHour, endMin)) {
                 setAcceptTime(cordova.getActivity().getApplicationContext(), startHour, startMin, endHour, endMin, null);
             } else {
-                // TODO: 16/3/14 Error Callback 
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "时间设置有误");
+                pluginResult.setKeepCallback(true);
+                commandResultContext.sendPluginResult(pluginResult);
             }
             return true;
         }
         if("getAllAlias".equals(action)) {
             List<String> alias = getAllAlias(cordova.getActivity().getApplicationContext());
             // TODO: 16/3/14 return all alias
+            Log.w(TAG, "Alias " + alias.toString());
             return true;
         }
         if("getAllTopic".equals(action)) {
             List<String> topic = getAllTopic(cordova.getActivity().getApplicationContext());
             // TODO: 16/3/14 return all topic
+            Log.w(TAG, "Topic " + topic.toString());
             return true;
         }
         if("reportMessageClicked".equals(action)) {
@@ -150,12 +156,19 @@ public class MiPushPlugin extends CordovaPlugin {
             return true;
         }
         if("getRegId".equals(action)) {
+            commandResultContext = callbackContext;
             String regId = getRegId(cordova.getActivity().getApplicationContext());
-            // TODO: 16/3/15 return reg ID
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, regId);
+            pluginResult.setKeepCallback(true);
+            commandResultContext.sendPluginResult(pluginResult);
             return true;
         }
         if("startListenMessage".equals(action)) {
             listenContext = callbackContext;
+            return true;
+        }
+        if("startListenClickMessage".equals(action)) {
+            clickContext = callbackContext;
             return true;
         }
         return false;
@@ -359,6 +372,10 @@ public class MiPushPlugin extends CordovaPlugin {
 
     public static CallbackContext getListenCallback() {
         return listenContext;
+    }
+
+    public static CallbackContext getClickCallback() {
+        return clickContext;
     }
 
     public static void commandHandler(JSONObject message) {

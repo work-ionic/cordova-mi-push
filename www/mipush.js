@@ -25,7 +25,8 @@ var METHOD = {
     SET_LOCAL_NOTIFICATION_TYPE: 'setLocalNotificationType',
     CLEAR_LOCAL_NOTIFICATION_TYPE: 'clearLocalNotificationType',
     GET_REG_ID: 'getRegId',
-    START_LISTEN_MESSAGE: 'startListenMessage'
+    START_LISTEN_MESSAGE: 'startListenMessage',
+    START_LISTEN_CLICK_MESSAGE: 'startListenClickMessage'
 };
 
 function MiPush() {};
@@ -42,24 +43,24 @@ MiPush.prototype.setAlias = function(successCallback, alias) {
     exec(successCallback, null, TAG, METHOD.SET_ALIAS, [alias]);
 };
 
-MiPush.prototype.unsetAlias = function(successCallback) {
-    exec(successCallback, null, TAG, METHOD.UNSET_ALIAS, []);
+MiPush.prototype.unsetAlias = function(successCallback, alias) {
+    exec(successCallback, null, TAG, METHOD.UNSET_ALIAS, [alias]);
 };
 
 MiPush.prototype.setUserAccount = function(successCallback, userAccount) {
     exec(successCallback, null, TAG, METHOD.SET_USER_ACCOUNT, [userAccount]);
 };
 
-MiPush.prototype.unsetUserAccount = function(successCallback) {
-    exec(successCallback, null, TAG, METHOD.UNSET_USER_ACCOUNT, []);
+MiPush.prototype.unsetUserAccount = function(successCallback, userAccount) {
+    exec(successCallback, null, TAG, METHOD.UNSET_USER_ACCOUNT, [userAccount]);
 };
 
 MiPush.prototype.subscribe = function(successCallback, topic) {
     exec(successCallback, null, TAG, METHOD.SUBSCRIBE, [topic]);
 };
 
-MiPush.prototype.unsubscribe = function(successCallback) {
-    exec(successCallback, null, TAG, METHOD.UNSUBSCRIBE, []);
+MiPush.prototype.unsubscribe = function(successCallback, topic) {
+    exec(successCallback, null, TAG, METHOD.UNSUBSCRIBE, [topic]);
 };
 
 MiPush.prototype.pausePush = function(successCallback) {
@@ -102,12 +103,16 @@ MiPush.prototype.clearLocalNotificationType = function(successCallback) {
     exec(successCallback, null, TAG, METHOD.CLEAR_LOCAL_NOTIFICATION_TYPE, []);
 };
 
-MiPush.prototype.getRegId = function(successCallback, msgid) {
-    exec(successCallback, null, TAG, METHOD.GET_REG_ID, [msgid]);
+MiPush.prototype.getRegId = function(successCallback) {
+    exec(successCallback, null, TAG, METHOD.GET_REG_ID, []);
 };
 
 MiPush.prototype.startListenMessage = function(successCallback) {
     exec(successCallback, null, TAG, METHOD.START_LISTEN_MESSAGE, []);
+};
+
+MiPush.prototype.startListenClickMessage = function(successCallback) {
+    exec(successCallback, null, TAG, METHOD.START_LISTEN_CLICK_MESSAGE, []);
 };
 
 module.exports = new MiPush();
