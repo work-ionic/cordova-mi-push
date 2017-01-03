@@ -169,6 +169,12 @@ public class MiPushPlugin extends CordovaPlugin {
         }
         if("startListenClickMessage".equals(action)) {
             clickContext = callbackContext;
+            MiPushMessage message = (MiPushMessage) cordova.getActivity().getIntent().getSerializableExtra(PushMessageHelper.KEY_MESSAGE);
+            if (message != null) {
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
+                pluginResult.setKeepCallback(true);
+                callbackContext.sendPluginResult(pluginResult);
+            }
             return true;
         }
         return false;
