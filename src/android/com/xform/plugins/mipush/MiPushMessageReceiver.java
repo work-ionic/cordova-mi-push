@@ -30,19 +30,31 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         MiPushPlugin.getListenCallback().sendPluginResult(pluginResult);
     }
 
+
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        Intent mainIntent = null;
-        try {
-            mainIntent = new Intent(context, this.getClass().getClassLoader().loadClass(context.getPackageName() + ".MainActivity"));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if (MiPushPlugin.getClickCallback() != null) {
+            // app is alive
+            Intent mainIntent = null;
+            try {
+                mainIntent = new Intent(context, this.getClass().getClassLoader().loadClass(context.getPackageName() + ".MainActivity"));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(mainIntent);
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
+            pluginResult.setKeepCallback(true);
+            MiPushPlugin.getClickCallback().sendPluginResult(pluginResult);
+        } else {
+            // app is dead
+            Intent launchIntent = context.getPackageManager().
+                    getLaunchIntentForPackage(context.getPackageName());
+            launchIntent.setFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            launchIntent.putExtra(PushMessageHelper.KEY_MESSAGE, message);
+            context.startActivity(launchIntent);
         }
-        mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(mainIntent);
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
-        pluginResult.setKeepCallback(true);
-        MiPushPlugin.getClickCallback().sendPluginResult(pluginResult);
     }
 
     @Override
@@ -98,8 +110,10 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onReceiveMessage(Context context, MiPushMessage message) {
-        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
-        pluginResult.setKeepCallback(true);
-        MiPushPlugin.getListenCallback().sendPluginResult(pluginResult);
+        if (MiPushPlugin.getListenCallback() != null) {
+            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
+            pluginResult.setKeepCallback(true);
+            MiPushPlugin.getListenCallback().sendPluginResult(pluginResult);
+        }
     }
 }
