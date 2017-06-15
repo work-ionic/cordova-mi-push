@@ -1,6 +1,7 @@
 package com.xform.plugins.mipush;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -9,7 +10,13 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 import android.widget.Toast;
 
 import com.xiaomi.mipush.sdk.MiPushMessage;
+import com.xiaomi.mipush.sdk.PushMessageHelper;
 import org.apache.cordova.*;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -167,10 +174,12 @@ public class MiPushPlugin extends CordovaPlugin {
             listenContext = callbackContext;
             return true;
         }
-        if("startListenClickMessage".equals(action)) {
+        if ("startListenClickMessage".equals(action)) {
             clickContext = callbackContext;
-            MiPushMessage message = (MiPushMessage) cordova.getActivity().getIntent().getSerializableExtra(PushMessageHelper.KEY_MESSAGE);
+            Intent launchIntent = cordova.getActivity().getIntent();
+            MiPushMessage message = (MiPushMessage) launchIntent.getSerializableExtra(PushMessageHelper.KEY_MESSAGE);
             if (message != null) {
+                launchIntent.putExtra(PushMessageHelper.KEY_MESSAGE, (String) null);
                 PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, MiPushPlugin.jsonMessage(message));
                 pluginResult.setKeepCallback(true);
                 callbackContext.sendPluginResult(pluginResult);
